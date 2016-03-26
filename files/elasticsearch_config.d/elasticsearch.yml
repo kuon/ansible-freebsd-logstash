@@ -1,0 +1,4 @@
+cluster.name: {{ logstash_cluster_name }}
+node.name: {{ logstash_node_name }}
+path.data: {{ logstash_directory }}/elasticsearch/data
+path.logs: {{ logstash_directory }}/elasticsearch/logs

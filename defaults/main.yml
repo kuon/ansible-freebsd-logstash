@@ -1,0 +1,6 @@
+---
+logstash_directory: /srv/logstash
+logstash_cluster_name: logstash-cluster
+logstash_node_name: "{{ inventory_hostname }}"
+logstash_port: 51400
+rbenv_version: 2.3.0

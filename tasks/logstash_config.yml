@@ -1,0 +1,4 @@
+- name: Copy logstash configuration
+  template: src={{ item }} dest={{ logstash_directory }}/logstash/config.d/{{ item | basename }}
+  with_fileglob: logstash_config.d/*
+  tags: config

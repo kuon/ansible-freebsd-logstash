@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cd {{ logstash_directory }}/logstash/
+
+
+exec 2>&1
+exec chpst -u logstash ./bin/logstash -f config.d
+

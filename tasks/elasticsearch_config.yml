@@ -1,0 +1,5 @@
+- name: Copy elasticsearch configuration
+  template: src={{ item }} dest={{ logstash_directory }}/elasticsearch/config/{{ item | basename }}
+  with_fileglob: elasticsearch_config.d/*
+  tags: config
+

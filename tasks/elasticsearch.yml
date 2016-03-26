@@ -1,0 +1,30 @@
+
+- name: Download elasticsearch
+  get_url: url=https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.2.0/elasticsearch-2.2.0.tar.gz  dest={{ logstash_directory }}/elasticsearch-2.2.0.tar.gz
+
+- name: Unarchive elasticsearch
+  unarchive: src={{ logstash_directory }}/elasticsearch-2.2.0.tar.gz copy=no dest={{ logstash_directory }}
+
+- name: Remove old install
+  file: state=absent dest={{ logstash_directory }}/elasticsearch
+
+- name: Move archive
+  command: mv {{ logstash_directory }}/elasticsearch-2.2.0 {{ logstash_directory }}/elasticsearch
+
+- name: Remove archive
+  file: state=absent dest={{ logstash_directory }}/elasticsearch-2.2.0.tar.gz
+
+- name: Create data directory
+  file: state=directory dest={{ logstash_directory }}/elasticsearch/data
+
+- name: Create logs directory
+  file: state=directory dest={{ logstash_directory }}/elasticsearch/logs
+
+- name: Mark as installed
+  file: state=touch dest={{ logstash_directory }}/elasticsearch/.ansible-installed
+
+- name: Create service dir
+  file: path=/var/service/elasticsearch state=directory
+
+- name: Copy service file
+  copy: src=service/elasticsearch.run dest=/var/service/elasticsearch/run mode=0700

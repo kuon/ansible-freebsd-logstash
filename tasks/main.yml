@@ -1,0 +1,56 @@
+- name: Stop services
+  command: sv stop {{ item }}
+  ignore_errors: true
+  tags: config
+  with_items:
+  - elasticsearch
+  - logstash
+  - kibana
+
+- name: Create zfs logstash fs
+  zfs: name=zroot{{ logstash_directory }} state=present
+
+- name: Create a logstash user
+  user: name=logstash state=present
+
+- name: Check if logstash is present
+  command: ls {{ logstash_directory }}/logstash/.ansible-installed
+  register: logstash_installed
+  ignore_errors: true
+
+- include: logstash.yml
+  when: logstash_installed | failed
+
+- include: logstash_config.yml
+
+
+- name: Check if elasticsearch is present
+  command: ls {{ logstash_directory }}/elasticsearch/.ansible-installed
+  register: elasticsearch_installed
+  ignore_errors: true
+
+- include: elasticsearch.yml
+  when: elasticsearch_installed | failed
+
+- include: elasticsearch_config.yml
+
+- name: Check if kibana is present
+  command: ls {{ logstash_directory }}/kibana/.ansible-installed
+  register: kibana_installed
+  ignore_errors: true
+
+- include: kibana.yml
+  when: kibana_installed | failed
+
+- include: kibana_config.yml
+
+- name: Set owner of tree
+  file: path={{ logstash_directory }} owner=logstash recurse=true state=directory
+
+- name: Start services
+  command: sv start {{ item }}
+  tags: config
+  with_items:
+  - elasticsearch
+  - logstash
+  - kibana

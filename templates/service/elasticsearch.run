@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cd {{ logstash_directory }}/elasticsearch/
+
+
+exec 2>&1
+exec chpst -u logstash ./bin/elasticsearch
+

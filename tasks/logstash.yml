@@ -1,0 +1,31 @@
+- name: Clone logstash repository
+  git: repo=https://github.com/elastic/logstash.git dest={{ logstash_directory }}/logstash force=yes
+
+- name: Boostrap logstash
+  command: rbenv exec rake bootstrap
+  environment: '{{ rbenv_env }}'
+  args:
+    chdir: "{{ logstash_directory }}/logstash"
+
+- name: Install plugins
+  command: ./bin/plugin install logstash-{{item}}
+  args:
+    chdir: "{{ logstash_directory }}/logstash"
+  with_items:
+  - input-stdin
+  - input-tcp
+  - filter-grok
+  - filter-mutate
+  - filter-date
+  - output-stdout
+  - codec-rubydebug
+  - output-elasticsearch
+
+- name: Create service dir
+  file: path=/var/service/logstash state=directory
+
+- name: Copy service file
+  copy: src=service/logstash.run dest=/var/service/logstash/run mode=0700
+
+- name: Mark as installed
+  file: state=touch dest={{ logstash_directory }}/logstash/.ansible-installed

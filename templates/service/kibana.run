@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cd {{ logstash_directory }}/kibana/
+
+
+exec 2>&1
+exec chpst -u logstash ./bin/kibana
+
